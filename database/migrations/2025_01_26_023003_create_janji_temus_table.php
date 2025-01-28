@@ -15,10 +15,10 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->uuid('user_id');
             $table->uuid('poli_id');
-            $table->dateTime('tanggal_kunjungan');
+            $table->date('tanggal_kunjungan');
             $table->string('nomor_antrian');
             $table->enum('status_pasien', ['lama', 'baru']);
-            $table->enum('status_penanganan', ['menunggu', 'diperiksa']);
+            $table->enum('status_penanganan', ['menunggu', 'diperiksa', 'selesai']);
             $table->timestamps();
         });
     }

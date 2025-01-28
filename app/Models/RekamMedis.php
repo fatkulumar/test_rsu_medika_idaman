@@ -11,6 +11,7 @@ class RekamMedis extends Model
     use GenUid, ConverDateToIndonesia;
     protected $fillable = [
         'janji_temu_id',
+        'user_id',
         'keluhan',
         'diagnosa',
         'tindakan',
@@ -18,6 +19,7 @@ class RekamMedis extends Model
         'keterangan',
         'nomor_antrian',
         'status_rawat',
+        'nomor_rekam_medis',
     ];
 
     public function janjiTemu()

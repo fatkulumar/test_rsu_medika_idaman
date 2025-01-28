@@ -16,10 +16,10 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->name('admin.')
                 ->group(base_path('routes/admin.php'));
 
-            Route::middleware(['web', 'role:pasien', 'auth', 'verified', ])
-                ->prefix('pasien')
-                ->name('pasien.')
-                ->group(base_path('routes/pasien.php'));
+            Route::middleware(['web', 'role:pegawai', 'auth', 'verified', ])
+                ->prefix('pegawai')
+                ->name('pegawai.')
+                ->group(base_path('routes/pegawai.php'));
 
             Route::middleware(['web', 'role:dokter', 'auth', 'verified', ])
                 ->prefix('dokter')

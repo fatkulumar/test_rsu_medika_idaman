@@ -13,7 +13,7 @@ class RekamMedisDokterController extends Controller
 {
     function index()
     {
-        $rekamMedis = RekamMedis::with(['janjiTemu.user', 'janjiTemu.dokter', 'janjiTemu.poli'])
+        $rekamMedis = RekamMedis::with(['janjiTemu.user', 'janjiTemu.dokter', 'janjiTemu.poli', 'janjiTemu.user.profile'])
         ->orderBy('status_rawat', 'ASC')
         ->where('status_rawat', '!=', 'pulang')
         ->paginate(10);

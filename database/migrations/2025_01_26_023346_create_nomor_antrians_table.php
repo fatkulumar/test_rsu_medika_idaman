@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('nomor_antrians', function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->id();
             $table->integer('nomor');
             $table->timestamps();
         });

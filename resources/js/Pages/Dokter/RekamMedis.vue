@@ -106,6 +106,12 @@ function showDetail(item: any) {
                                                     No
                                                 </th>
                                                 <th scope="col" class="px-6 py-3">
+                                                    Nomor RM
+                                                </th>
+                                                <th scope="col" class="px-6 py-3">
+                                                    email
+                                                </th>
+                                                <th scope="col" class="px-6 py-3">
                                                     Pasien
                                                 </th>
                                                 <th scope="col" class="px-6 py-3">
@@ -130,6 +136,12 @@ function showDetail(item: any) {
                                                 <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                     {{ index + props.rekamMedis.from }}
                                                 </th>
+                                                <td class="px-6 py-4">
+                                                    {{ item.nomor_rekam_medis }}
+                                                </td>
+                                                <td class="px-6 py-4">
+                                                    {{ item.janji_temu?.user?.email }}
+                                                </td>
                                                 <td class="px-6 py-4">
                                                     {{ item.janji_temu?.user?.name }}
                                                 </td>
@@ -220,6 +232,7 @@ function showDetail(item: any) {
                                     <option :selected="form.status_rawat == null" value="">Pilih Status</option>
                                     <option value="menginap">Menginap</option>
                                     <option value="boleh pulang">Boleh Pulang</option>
+                                    <option value="rawat jalan">Rawat Jalan</option>
                                 </select>
                                 <label for="status_rawat" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Status Rawat</label>
                             </div>

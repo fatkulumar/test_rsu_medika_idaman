@@ -48,4 +48,24 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    function profile()
+    {
+        return $this->belongsTo(Profile::class, 'id', 'user_id');
+    }
+
+    function dokter()
+    {
+        return $this->belongsTo(Dokter::class, 'id', 'user_id');
+    }
+
+    public function rekamMedis()
+    {
+        return $this->belongsTo(RekamMedis::class, 'id', 'user_id');
+    }
+
+    public function janjiTemu()
+    {
+        return $this->belongsTo(JanjiTemu::class, 'id', 'user_id');
+    }
 }

@@ -16,7 +16,7 @@ let search = ref();
 
 watch(search, (value) => {
   router.get(
-    "/admin/diperiksa",
+    "/admin/selesai-diperiksa",
     { search: value },
     {
       preserveState: true,
@@ -78,7 +78,7 @@ function showDetail(item: any) {
     modalDetail.value = true
 }
 
-function handleDelete(id: String, name: String) {
+function hanldeDelete(id: String, name: String) {
     try {
         const konfirm = confirm(`Hapus ${name}`)
         if (konfirm) {
@@ -92,7 +92,7 @@ function handleDelete(id: String, name: String) {
 </script>
 
 <template>
-    <Head title="List Diperiksa" />
+    <Head title="List Selesai Diperiksa" />
     <div>
         <AuthenticatedLayoutAdmin>
 
@@ -100,13 +100,11 @@ function handleDelete(id: String, name: String) {
                     <div
                         class="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800"
                     >
-                        <div class="text-gray-900 dark:text-gray-100">
-
-                            <NavbarAdmin title="List Diperiksa">
-                                <div class="mb-2">
+                    <div class="text-gray-900 dark:text-gray-100">
+                        <NavbarAdmin title="List Selesai Diperiksa">
+                                <div class="mb-1">
                                     <input v-model="search" type="text" placeholder="Search" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" />
-                               </div>
-
+                                </div>
                                 <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
                                     <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                                         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -178,7 +176,7 @@ function handleDelete(id: String, name: String) {
 
                                                         <svg @click="showDetail(item)" class="w-8 h-8 cursor-pointer" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#27bfdd"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M15.0007 12C15.0007 13.6569 13.6576 15 12.0007 15C10.3439 15 9.00073 13.6569 9.00073 12C9.00073 10.3431 10.3439 9 12.0007 9C13.6576 9 15.0007 10.3431 15.0007 12Z" stroke="#18d8b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M12.0012 5C7.52354 5 3.73326 7.94288 2.45898 12C3.73324 16.0571 7.52354 19 12.0012 19C16.4788 19 20.2691 16.0571 21.5434 12C20.2691 7.94291 16.4788 5 12.0012 5Z" stroke="#18d8b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
 
-                                                        <svg @click="handleDelete(item.id, item.user.name)" class="w-8 h-8 cursor-pointer" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M10 12L14 16M14 12L10 16M4 6H20M16 6L15.7294 5.18807C15.4671 4.40125 15.3359 4.00784 15.0927 3.71698C14.8779 3.46013 14.6021 3.26132 14.2905 3.13878C13.9376 3 13.523 3 12.6936 3H11.3064C10.477 3 10.0624 3 9.70951 3.13878C9.39792 3.26132 9.12208 3.46013 8.90729 3.71698C8.66405 4.00784 8.53292 4.40125 8.27064 5.18807L8 6M18 6V16.2C18 17.8802 18 18.7202 17.673 19.362C17.3854 19.9265 16.9265 20.3854 16.362 20.673C15.7202 21 14.8802 21 13.2 21H10.8C9.11984 21 8.27976 21 7.63803 20.673C7.07354 20.3854 6.6146 19.9265 6.32698 19.362C6 18.7202 6 17.8802 6 16.2V6" stroke="#eb2424" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+                                                        <svg @click="hanldeDelete(item.id, item.user.name)" class="w-8 h-8 cursor-pointer" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M10 12L14 16M14 12L10 16M4 6H20M16 6L15.7294 5.18807C15.4671 4.40125 15.3359 4.00784 15.0927 3.71698C14.8779 3.46013 14.6021 3.26132 14.2905 3.13878C13.9376 3 13.523 3 12.6936 3H11.3064C10.477 3 10.0624 3 9.70951 3.13878C9.39792 3.26132 9.12208 3.46013 8.90729 3.71698C8.66405 4.00784 8.53292 4.40125 8.27064 5.18807L8 6M18 6V16.2C18 17.8802 18 18.7202 17.673 19.362C17.3854 19.9265 16.9265 20.3854 16.362 20.673C15.7202 21 14.8802 21 13.2 21H10.8C9.11984 21 8.27976 21 7.63803 20.673C7.07354 20.3854 6.6146 19.9265 6.32698 19.362C6 18.7202 6 17.8802 6 16.2V6" stroke="#eb2424" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
                                                     </div>
                                                 </td>
                                             </tr>

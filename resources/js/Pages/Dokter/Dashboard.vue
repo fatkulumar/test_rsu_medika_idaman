@@ -29,13 +29,13 @@ defineProps({
                                     </div>
 
                                     <div class="bg-green-600 w-48 h-32 flex flex-col items-center justify-center">
-                                        <p>{{ dashboard.dokter }}</p>
-                                        <p>Dokter</p>
+                                        <p>{{ dashboard.pulang }}</p>
+                                        <p>Pulang</p>
                                     </div>
 
                                     <div class="bg-purple-600 w-48 h-32 flex flex-col items-center justify-center">
-                                        <p>{{ dashboard.poli }}</p>
-                                        <p>Poli</p>
+                                        <p>{{ dashboard.bolehPulang }}</p>
+                                        <p>Boleh Pulang</p>
                                     </div>
                                 </div>
 

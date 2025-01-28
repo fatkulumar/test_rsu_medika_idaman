@@ -4,14 +4,14 @@ import { Head, Link } from '@inertiajs/vue3';
 </script>
 
 <template>
-    <Head title="Pasien Lama" />
+    <Head title="Dashboard" />
 
     <AuthenticatedLayout>
         <template #header>
             <h2
                 class="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200"
             >
-                Pasien Lama
+                Dashboard
             </h2>
         </template>
 
@@ -21,7 +21,13 @@ import { Head, Link } from '@inertiajs/vue3';
                     class="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-900"
                 >
                     <div class="p-6 text-gray-900 dark:text-gray-100 flex items-center justify-center gap-2">
+                        <Link :href="route('pegawai.lama')" class="bg-red-600 rounded-md px-4 py-2">
+                            Pasien Lama
+                        </Link>
 
+                        <Link :href="route('pegawai.baru')" class="bg-green-600 rounded-md px-4 py-2">
+                            Pasien Baru
+                        </Link>
                     </div>
                 </div>
             </div>

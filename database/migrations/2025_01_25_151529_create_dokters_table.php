@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('dokters', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('user_id');
+            $table->foreignUuid('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
             $table->uuid('poli_id');
             $table->string('spesialisasi')->nullable();
             $table->timestamps();

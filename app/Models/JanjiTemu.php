@@ -10,7 +10,7 @@ class JanjiTemu extends Model
 {
     use GenUid, ConverDateToIndonesia;
 
-    protected $fillabe = [
+    protected $fillable = [
         'user_id',
         'poli_id',
         'tanggal_kunjungan',

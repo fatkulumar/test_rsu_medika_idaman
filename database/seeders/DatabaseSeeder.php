@@ -9,6 +9,7 @@ use App\Models\Poli;
 use App\Models\Profile;
 use App\Models\RekamMedis;
 use App\Models\User;
+use Carbon\Carbon;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -26,6 +27,7 @@ class DatabaseSeeder extends Seeder
         Role::create(['name' => 'admin']);
         Role::create(['name' => 'pasien']);
         Role::create(['name' => 'dokter']);
+        Role::create(['name' => 'pegawai']);
         $admin = User::create([
             'name' => 'admin',
             'email' => 'admin@gmail.com',
@@ -33,12 +35,19 @@ class DatabaseSeeder extends Seeder
         ]);
         $admin->assignRole('admin');
 
-        $pasien = User::create([
-            'name' => 'pasien',
-            'email' => 'pasien@gmail.com',
+        $pasien1 = User::create([
+            'name' => 'pasien1',
+            'email' => 'pasien1@gmail.com',
             'password' => Hash::make('password'),
         ]);
-        $pasien->assignRole('pasien');
+        $pasien1->assignRole('pasien');
+
+        $pasien2 = User::create([
+            'name' => 'pasien2',
+            'email' => 'pasien2@gmail.com',
+            'password' => Hash::make('password'),
+        ]);
+        $pasien2->assignRole('pasien');
 
         $dokter = User::create([
             'name' => 'dokter',
@@ -47,12 +56,39 @@ class DatabaseSeeder extends Seeder
         ]);
         $dokter->assignRole('dokter');
 
+        $pegawai = User::create([
+            'name' => 'pegawai',
+            'email' => 'pegawai@gmail.com',
+            'password' => Hash::make('password'),
+        ]);
+        $pegawai->assignRole('pegawai');
+
         Profile::create([
             'user_id' => $admin->id,
         ]);
 
         Profile::create([
-            'user_id' => $pasien->id,
+            'user_id' => $pasien1->id,
+            'hp' => '08123456789',
+            'tanggal_lahir' => now(),
+            'jenis_kelamin' => 'laki-laki',
+            'alamat' => 'kedunggalar',
+        ]);
+
+        Profile::create([
+            'user_id' => $pasien2->id,
+            'hp' => '08123456781',
+            'tanggal_lahir' => now(),
+            'jenis_kelamin' => 'perempuan',
+            'alamat' => 'ngawi',
+        ]);
+
+        Profile::create([
+            'user_id' => $dokter->id,
+        ]);
+
+        Profile::create([
+            'user_id' => $pegawai->id,
         ]);
 
         $poli1 = Poli::create([
@@ -74,7 +110,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $janjiTemu = JanjiTemu::create([
-            'user_id' => $pasien->id,
+            'user_id' => $pasien1->id,
             'poli_id' => $poli1->id,
             'tanggal_kunjungan' => now(),
             'nomor_antrian' => $nomorAntrian->nomor,
@@ -82,8 +118,12 @@ class DatabaseSeeder extends Seeder
             'status_penanganan' => 'menunggu',
         ]);
 
+        $tanggalDanWaktu = Carbon::now()->format('ymd');
+        $nomorRekam = $tanggalDanWaktu.'0001';
+
         RekamMedis::create([
             'janji_temu_id' => $janjiTemu->id,
+            'user_id' => $pasien1->id,
             'keluhan' => "Mual Mual",
             'diagnosa' => 'Herd',
             'tindakan' => 'inpus 1 hari dulu',
@@ -91,8 +131,7 @@ class DatabaseSeeder extends Seeder
             'keterangan' => 'Akut',
             'nomor_antrian' => $janjiTemu->nomor_antrian,
             'status_rawat' => 'menginap',
+            'nomor_rekam_medis' => $nomorRekam,
         ]);
-
-
     }
 }

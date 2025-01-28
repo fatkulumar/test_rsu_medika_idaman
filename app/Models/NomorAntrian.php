@@ -7,8 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class NomorAntrian extends Model
 {
-    use GenUid;
-
     protected $fillable = [
         'nomor',
     ];
