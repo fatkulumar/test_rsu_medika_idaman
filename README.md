@@ -15,25 +15,18 @@
 - [vue3-toastify 0.2.8](https://www.npmjs.com/package/vue3-toastify)
 
 ##### Requirements
-- PHP >= 8.2
+PHP >= 8.2  
+node >= 18
 
 ##### Installation
-    ```
     composer install
-    ```
-
-    ```
     copy .env-example to .env
-    ```
-
-    ```
     php artisan migrate --seed
-    ```
+    npm install
+    npm run dev
 
-##### Installation
-     ```
+##### Running
     php artisan serve
-    ```
 ##### Structure
 - app
     - DataTransferObject
