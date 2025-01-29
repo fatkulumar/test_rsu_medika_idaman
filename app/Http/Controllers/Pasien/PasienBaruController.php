@@ -35,6 +35,12 @@ class PasienBaruController extends Controller
                 'user_id' => 'required|string|max:36',
                 'tanggal_kunjungan' => 'required|date',
                 'status_penanganan' => 'required|string|in:menunggu,diperiksa,selesai',
+
+                'keluhan' => 'nullable|string',
+                'diagnosa' => 'nullable|string',
+                'tindakan' => 'nullable|string',
+                'obat' => 'nullable|string',
+                'keterangan' => 'nullable|string',
             ]);
 
             if ($validator->fails()) {
@@ -74,23 +80,29 @@ class PasienBaruController extends Controller
                 $tanggalDanWaktu = Carbon::now()->format('ymd');
                 $nomorRekam = $tanggalDanWaktu.'0001';
             }
-
+            // return $request;
             $tanggalDanWaktu = Carbon::now()->format('ymd');
             $rekamMedis = RekamMedis::create([
-                'user_id' =>$request->post('user_id'),
+                'user_id' => $janjiTemu->user_id,
                 'janji_temu_id' => $janjiTemu->id,
                 'status_rawat' => 'rawat jalan',
                 'nomor_antrian' => $nomorAntrian,
                 'nomor_rekam_medis' => $nomorRekam,
+
+                'keluhan' => $request->post('keluhan'),
+                'diagnosa' => $request->post('diagnosa'),
+                'tindakan' => $request->post('tindakan'),
+                'obat' => $request->post('obat'),
+                'keterangan' => $request->post('keterangan'),
             ]);
 
             if ($janjiTemu && $rekamMedis) {
                 $antrian = NomorAntrian::first();
                 $antrian->nomor = $nomorAntrian;
                 $antrian->save();
-                return redirect()->route('dashboard')->with('success', 'Berhasil');
+                return redirect()->route('dashboard')->with('success', 'Berhasil Daftar');
             }else{
-                return redirect()->back()->with('error', 'Gagal');
+                return redirect()->back()->with('error', 'Gagal Daftar');
             }
         } catch (\Exception $th) {
             $error['message'] = $th->getMessage();

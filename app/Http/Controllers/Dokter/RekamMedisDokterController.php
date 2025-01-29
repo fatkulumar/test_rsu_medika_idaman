@@ -46,7 +46,7 @@ class RekamMedisDokterController extends Controller
             $rekamMedis->status_rawat = $request->post('status_rawat');
             $rekamMedis->save();
 
-            return redirect()->back()->with('success', 'Berhasil');
+            return redirect()->back()->with('success', 'Berhasil Mendiagnosa');
         } catch (\Exception $th) {
             $error['message'] = $th->getMessage();
             $error['line'] = $th->getLine();

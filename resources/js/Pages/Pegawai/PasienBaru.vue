@@ -2,6 +2,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { reactive } from 'vue';
+import { toast } from 'vue3-toastify'
 
 const props = defineProps({
     users: {
@@ -12,7 +13,11 @@ const props = defineProps({
     polis: {
         type: Object,
         require: true
-    }
+    },
+    flash: {
+        type: Object,
+        require: false
+    },
 })
 
 const form = useForm({
@@ -46,12 +51,28 @@ function resetForm() {
 function submit() {
     form.post('/pegawai/daftar-pasien-baru', {
         preserveScroll: true,
-        // onSuccess: () => closeModal(),
-        // onError: () => alert('Error'),
+        onSuccess: () => {
+            // showToast(props.flash.success)
+        },
+        onError: () => {
+            showToastError(props.error.message)
+        },
     })
 }
 
 const today = reactive(new Date().toISOString().split('T')[0],)
+
+const showToast = (message = 'Berhasil') => {
+  toast.success(message, {
+    position: 'top-right',
+  })
+}
+
+const showToastError = (message = 'Gagal') => {
+  toast.error(message, {
+    position: 'top-right',
+  })
+}
 
 </script>
 
@@ -103,8 +124,8 @@ const today = reactive(new Date().toISOString().split('T')[0],)
                                             </select>
                                         </div>
 
-
-                                        <!-- <div>
+                                        <!-- +++++ -->
+                                        <div>
                                             <label for="status_rawat" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Status Rawat</label>
                                             <select v-model="form.status_rawat" id="status_rawat" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                                                 <option :selected="form.status_rawat == 'rawat jalan'" value="rawat jalan">Rawat Jalan</option>
@@ -112,31 +133,32 @@ const today = reactive(new Date().toISOString().split('T')[0],)
                                                 <option value="pulang">pulang</option>
                                                 <option value="boleh pulang">Boleh Pulang</option>
                                             </select>
-                                        </div> -->
+                                        </div>
 
-                                        <!-- <div class="sm:col-span-2">
+                                        <div class="sm:col-span-2">
                                             <label for="keluhan" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Keluhan</label>
-                                            <textarea id="keluhan" rows="8" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Boleh kosong"></textarea>
+                                            <textarea v-model="form.keluhan" id="keluhan" rows="8" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Boleh kosong"></textarea>
                                         </div>
                                         <div class="sm:col-span-2">
-                                            <label for="keluhan" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Diagnosa</label>
-                                            <textarea id="keluhan" rows="8" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Boleh kosong"></textarea>
+                                            <label for="diagnosa" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Diagnosa</label>
+                                            <textarea v-model="form.diagnosa" id="diagnosa" rows="8" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Boleh kosong"></textarea>
                                         </div>
 
                                         <div class="sm:col-span-2">
                                             <label for="tindakan" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tindakan</label>
-                                            <textarea id="tindakan" rows="8" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Boleh kosong"></textarea>
+                                            <textarea v-model="form.tindakan" id="tindakan" rows="8" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Boleh kosong"></textarea>
                                         </div>
 
                                         <div class="sm:col-span-2">
                                             <label for="keterangan" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Keterangan</label>
-                                            <textarea id="keterangan" rows="8" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Boleh kosong"></textarea>
+                                            <textarea v-model="form.keterangan" id="keterangan" rows="8" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Boleh kosong"></textarea>
                                         </div>
 
                                         <div class="sm:col-span-2">
                                             <label for="obat" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Obat</label>
-                                            <textarea id="obat" rows="8" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Boleh kosong"></textarea>
-                                        </div> -->
+                                            <textarea v-model="form.obat" id="obat" rows="8" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Boleh kosong"></textarea>
+                                        </div>
+                                        <!-- +++++ -->
                                     </div>
                                     <button @click="submit" type="button" class="bg-blue-600 inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
                                         Submit

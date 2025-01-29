@@ -45,49 +45,36 @@ const props = defineProps({
                     </div>
                     <div class="p-6 text-gray-900 dark:text-gray-100 flex items-center justify-center gap-2">
                         <div v-for="item, index in props.data" :key="index">
-                            <div class="flex gap-3">
-                                <p>{{ index + 1 }}.</p>
-                                <table>
-                                    <tr>
-                                        <td>Nomor RM</td>
-                                        <td>:</td>
-                                        <td>{{ item.rekam_medis?.nomor_rekam_medis }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Nomor Antrian</td>
-                                        <td>:</td>
-                                        <td>{{ item.janji_temu?.nomor_antrian }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Poli</td>
-                                        <td>:</td>
-                                        <td>{{ item.janji_temu?.poli?.name }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Dokter</td>
-                                        <td>:</td>
-                                        <td>{{ item.janji_temu?.dokter?.name }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Status Pasien</td>
-                                        <td>:</td>
-                                        <td>{{ item.janji_temu?.status_pasien }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Status Penanganan</td>
-                                        <td>:</td>
-                                        <td>{{ item.janji_temu?.status_penanganan }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Tanggal Kunjungan</td>
-                                        <td>:</td>
-                                        <td>{{ item.janji_temu?.poli?.name }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Tanggal Kunjungan</td>
-                                        <td>:</td>
-                                        <td>{{ item.janji_temu?.tanggal_kunjungan }}</td>
-                                    </tr>
+                            <div class="relative overflow-x-auto shadow-md sm:rounded-lg flex gap-3">
+                                <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                        <tr>
+                                            <th scope="col" class="px-6 py-3">No</th>
+                                            <th scope="col" class="px-6 py-3">Nomor RM</th>
+                                            <th scope="col" class="px-6 py-3">Nomor Antrian</th>
+                                            <th scope="col" class="px-6 py-3">Poli</th>
+                                            <th scope="col" class="px-6 py-3">Dokter</th>
+                                            <th scope="col" class="px-6 py-3">Status Pasien</th>
+                                            <th scope="col" class="px-6 py-3">Tanggal Kunjungan</th>
+                                            <th scope="col" class="px-6 py-3">Tanggal Kunjungan</th>
+                                            <th scope="col" class="px-6 py-3">Status Penanganan</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200">
+                                            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                {{ index + 1 }}
+                                            </th>
+                                            <td class="px-6 py-4">{{ item.rekam_medis?.nomor_rekam_medis }}</td>
+                                            <td class="px-6 py-4">{{ item.janji_temu?.nomor_antrian }}</td>
+                                            <td class="px-6 py-4">{{ item.janji_temu?.poli?.name }}</td>
+                                            <td class="px-6 py-4">{{ item.janji_temu?.dokter?.name }}</td>
+                                            <td class="px-6 py-4">{{ item.janji_temu?.status_pasien }}</td>
+                                            <td class="px-6 py-4">{{ item.janji_temu?.poli?.name }}</td>
+                                            <td class="px-6 py-4">{{ item.janji_temu?.tanggal_kunjungan }}</td>
+                                            <td class="px-6 py-4">{{ item.janji_temu?.status_penanganan }}</td>
+                                        </tr>
+                                    </tbody>
                                 </table>
                             </div>
                         </div>

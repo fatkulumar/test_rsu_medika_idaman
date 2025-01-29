@@ -4,12 +4,17 @@ import NavbarAdmin from '@/Components/Partials/Admin/NavbarAdmin.vue';
 import AuthenticatedLayoutAdmin from '@/Layouts/AuthenticatedLayoutAdmin.vue';
 import { ref, watch } from 'vue';
 import Pagination from '@/Components/Partials/Pagination.vue';
+import { toast } from 'vue3-toastify'
 
 const props = defineProps({
     diperiksa: {
         type: Object,
         require: true,
-    }
+    },
+    flash: {
+        type: Object,
+        require: false
+    },
 });
 
 let search = ref();
@@ -52,8 +57,13 @@ function closeModal() {
 function submit() {
     form.post('/admin/janji-temu', {
         preserveScroll: true,
-        onSuccess: () => closeModal(),
-        onError: () => alert('Error'),
+        onSuccess: () => {
+            closeModal(),
+            showToast(props.flash.success)
+        },
+        onError: () => {
+            showToastError(props.error.message)
+        },
     })
 }
 
@@ -89,6 +99,17 @@ function hanldeDelete(id: String, name: String) {
     }
 }
 
+const showToast = (message = 'Berhasil') => {
+  toast.success(message, {
+    position: 'top-right',
+  })
+}
+
+const showToastError = (message = 'Gagal') => {
+  toast.error(message, {
+    position: 'top-right',
+  })
+}
 </script>
 
 <template>

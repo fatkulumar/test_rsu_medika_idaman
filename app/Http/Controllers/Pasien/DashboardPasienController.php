@@ -15,7 +15,17 @@ class DashboardPasienController extends Controller
      */
     public function __invoke(Request $request)
     {
-        $data = User::with(['roles', 'janjiTemu.poli', 'janjiTemu.dokter', 'rekamMedis'])->where('id', Auth::user()->id)->get();
+        $data = User::with([
+            'roles',
+            'janjiTemu' => function ($query) {
+                $query->orderBy('tanggal_kunjungan', 'DESC');
+            },
+            'janjiTemu.poli',
+            'janjiTemu.dokter',
+            'rekamMedis'
+        ])
+        ->where('id', Auth::id()) // Bisa pakai Auth::id() untuk lebih singkat
+        ->get();
         return Inertia::render('Pasien/Dashboard', [
             'data' => $data,
         ]);

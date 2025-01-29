@@ -4,12 +4,17 @@ import NavbarAdmin from '@/Components/Partials/Admin/NavbarAdmin.vue';
 import AuthenticatedLayoutAdmin from '@/Layouts/AuthenticatedLayoutAdmin.vue';
 import Pagination from '@/Components/Partials/Pagination.vue';
 import { watch, ref } from 'vue'
+import { toast } from 'vue3-toastify'
 
 const props = defineProps({
     users: {
         type: Object,
         require: true,
-    }
+    },
+    flash: {
+        type: Object,
+        require: false
+    },
 });
 
 let search = ref();
@@ -45,8 +50,12 @@ const submit = () => {
 
     form.post('/admin/register', {
         preserveScroll: true,
-        onFinish: () => {
-            closeModal()
+        onSuccess: () => {
+            closeModal(),
+            showToast(props.flash.success)
+        },
+        onError: () => {
+            showToastError(props.error.message)
         },
     })
 };
@@ -70,6 +79,18 @@ function handleDelete(id: String, name: String) {
     } catch (error)  {
         console.log(error)
     }
+}
+
+const showToast = (message = 'Berhasil') => {
+  toast.success(message, {
+    position: 'top-right',
+  })
+}
+
+const showToastError = (message = 'Gagal') => {
+  toast.error(message, {
+    position: 'top-right',
+  })
 }
 
 </script>
@@ -201,7 +222,7 @@ function handleDelete(id: String, name: String) {
                                                     </select>
                                                 </div>
                                             </div>
-                                            <button @click="submitTambah" type="submit" class="bg-blue-600 inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
+                                            <button type="submit" class="bg-blue-600 inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
                                                 Daftar
                                             </button>
                                     </div>

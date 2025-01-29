@@ -4,12 +4,17 @@ import NavbarAdmin from '@/Components/Partials/Admin/NavbarAdmin.vue';
 import AuthenticatedLayoutAdmin from '@/Layouts/AuthenticatedLayoutAdmin.vue';
 import { ref, watch } from 'vue';
 import Pagination from '@/Components/Partials/Pagination.vue';
+import { toast } from 'vue3-toastify'
 
 const props = defineProps({
     rekamMedis: {
         type: Object,
         require: true,
-    }
+    },
+    flash: {
+        type: Object,
+        require: false
+    },
 });
 
 let search = ref();
@@ -33,8 +38,13 @@ const form = useForm({
 function submit() {
     form.post('/admin/rekam-medis', {
         preserveScroll: true,
-        onSuccess: () => closeModal(),
-        onError: () => alert('Error'),
+        onSuccess: () => {
+            closeModal(),
+            showToast(props.flash.success)
+        },
+        onError: () => {
+            showToastError(props.error.message)
+        },
     })
 }
 
@@ -88,6 +98,17 @@ function hanldeDelete(id: String, name: String) {
     }
 }
 
+const showToast = (message = 'Berhasil') => {
+  toast.success(message, {
+    position: 'top-right',
+  })
+}
+
+const showToastError = (message = 'Gagal') => {
+  toast.error(message, {
+    position: 'top-right',
+  })
+}
 </script>
 
 <template>
@@ -202,6 +223,7 @@ function hanldeDelete(id: String, name: String) {
                             <div class="flex">
                                 <select v-model="form.status" id="status" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                 <option :selected="form.status == null" value="">Pilih Status</option>
+                                <option value="rawat jalan">Rawat Jalan</option>
                                 <option value="menginap">Meninap</option>
                                 <option value="boleh pulang">Boleh Pulang</option>
                                 <option value="pulang">Pulang</option>

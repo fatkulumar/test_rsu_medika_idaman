@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
+import { toast } from 'vue3-toastify'
 
 const props = defineProps({
     polis: {
@@ -14,8 +15,13 @@ const props = defineProps({
     data: {
         type: Object,
         require: true
-    }
+    },
+    flash: {
+        type: Object,
+        require: false
+    },
 })
+const page = usePage()
 const form = useForm({
     user_id: props.data.user_id,
     nomor_rm: props.data.nomor_rm,
@@ -38,9 +44,25 @@ function resetForm() {
 function submit() {
     form.post('/pegawai/daftar', {
         preserveScroll: true,
-        // onSuccess: () => closeModal(),
-        // onError: () => alert('Error'),
+        onSuccess: () => {
+            showToast(page.props.flash.success)
+        },
+        onError: () => {
+            showToastError(page.props.flash.success)
+        },
     })
+}
+
+const showToast = (message = 'Berhasil') => {
+  toast.success(message, {
+    position: 'top-right',
+  })
+}
+
+const showToastError = (message = 'Gagal') => {
+  toast.error(message, {
+    position: 'top-right',
+  })
 }
 
 </script>
@@ -66,14 +88,11 @@ function submit() {
                         <section class="bg-white dark:bg-gray-900">
                             <div class="py-8 px-4 mx-auto max-w-2xl">
                                 <h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white">Pendaftaran</h2>
+                                <form @submit.prevent="submit">
                                     <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
                                         <div class="w-full">
                                             <label for="bonor_antrian" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">No. Antrian</label>
                                             <input v-model="form.nomor_antrian" type="text" name="bonor_antrian" id="bonor_antrian" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="1" readonly required="">
-                                        </div>
-                                        <div class="w-full">
-                                            <label for="bonor_rm" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">No. RM</label>
-                                            <input v-model="form.nomor_rm" type="text" name="bonor_rm" id="bonor_rm" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="11111" required="" readonly>
                                         </div>
                                         <div class="w-full">
                                             <label for="user_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Pasien</label>
@@ -88,7 +107,7 @@ function submit() {
                                             <label for="tanggal_kunjungan" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tanggal Kunjungan</label>
                                             <input v-model="form.tanggal_kunjungan" type="date" name="tanggal_kunjungan" id="tanggal_kunjungan" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="" required="" :min="today">
                                         </div>
-                                        <div class="sm:col-span-2">
+                                        <div class="w-full">
                                             <label for="category" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Poli</label>
                                             <select style="pointer-events: none;" disabled="true" required v-model="form.poli_id" id="poli_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                                                 <option :selected="form.poli_id == null" value="">Pilih Poli</option>
@@ -98,9 +117,10 @@ function submit() {
                                             </select>
                                         </div>
                                     </div>
-                                    <button @click="submit" type="submit" class="bg-blue-600 inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
+                                    <button type="submit" class="bg-blue-600 inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
                                         Daftar
                                     </button>
+                                </form>
                             </div>
                         </section>
                     </div>

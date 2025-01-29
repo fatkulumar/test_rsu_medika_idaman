@@ -34,7 +34,7 @@ class RekamMedisAdminController extends Controller
     {
         try {
             $validator = Validator::make($request->all(), [
-                'status' => 'required|in:menginap,pulang,boleh pulang,selesai',
+                'status' => 'required|in:menginap,pulang,boleh pulang,selesai,rawat jalan',
                 'rekam_medis_id' => 'required|string|max:36',
             ]);
             if ($validator->fails()) {
@@ -46,8 +46,9 @@ class RekamMedisAdminController extends Controller
             $rekamMedis->save();
 
             if ($rekamMedis->save()) {
+                $request->post('status') != 'pulang' ? $statusPenanganan = 'diperiksa' : $statusPenanganan = 'selesai';
                 $janjiTemu = JanjiTemu::find($rekamMedis->janji_temu_id);
-                $janjiTemu->status_penanganan = 'selesai';
+                $janjiTemu->status_penanganan = $statusPenanganan;
                 $janjiTemu->save();
             }
 

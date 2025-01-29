@@ -38,7 +38,6 @@ class UserAdminController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return $validator->errors();
             return redirect()->back()->with('error', $validator->errors()->first());
         }
 
@@ -53,6 +52,6 @@ class UserAdminController extends Controller
 
         event(new Registered($user));
 
-        return redirect(route('admin.users', absolute: false));
+        return redirect(route('admin.users', absolute: false))->with('success', 'User berhasil ditambahkan');
     }
 }

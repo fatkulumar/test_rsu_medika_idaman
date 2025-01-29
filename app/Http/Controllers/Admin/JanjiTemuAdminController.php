@@ -107,7 +107,7 @@ class JanjiTemuAdminController extends Controller
                     }
                 }
 
-            return redirect()->back()->with('success', 'Berhasil');
+            return redirect()->back()->with('success', 'Berhasil Mengubah Status Penangan');
         } catch (\Exception $th) {
             $error['message'] = $th->getMessage();
             $error['line'] = $th->getLine();
@@ -158,7 +158,7 @@ class JanjiTemuAdminController extends Controller
 
                 RekamMedis::where('janji_temu_id', $janjiTemu->id)->delete();
                 if ($janjiTemu->delete()) {
-                    return redirect()->back()->with('success', 'Berhasil');
+                    return redirect()->back()->with('success', 'Selesai Diperiksa');
                 }else{
                     return redirect()->back()->with('error', 'Gagal');
                 }
@@ -277,9 +277,9 @@ class JanjiTemuAdminController extends Controller
                 }
 
             if ($janjiTemu) {
-                return redirect()->back()->with('success', 'Berhasil');
+                return redirect()->back()->with('success', 'Berhasil Daftar');
             }else{
-                return redirect()->back()->with('error', 'Gagal');
+                return redirect()->back()->with('error', 'Gagal Daftar');
             }
 
         } catch (\Exception $th) {

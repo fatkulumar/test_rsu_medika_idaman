@@ -8,7 +8,9 @@ import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 
 const appName = import.meta.env.VITE_APP_NAME || 'RSU Sakina Idaman';
 
+import Toast, { type PluginOptions } from 'vue3-toastify'
 import 'flowbite';
+import 'vue3-toastify/dist/index.css';
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
@@ -21,6 +23,9 @@ createInertiaApp({
         createApp({ render: () => h(App, props) })
             .use(plugin)
             .use(ZiggyVue)
+            .use(Toast, {
+                autoClose: 3000,
+            } as PluginOptions)
             .mount(el);
     },
     progress: {

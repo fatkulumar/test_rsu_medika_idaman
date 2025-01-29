@@ -66,7 +66,6 @@ class PasienLamaController extends Controller
             $data = [
                 'poli_id' => $request->post('poli_id'),
                 'user_id' => $request->post('user_id'),
-                'nomor_rm' => $request->post('nomor_rm'),
                 'status_pasien' => $statusPasien,
                 'status_penanganan' => $request->post('status_penanganan'),
                 'nomor_antrian' => $nomorAntrian,
@@ -91,7 +90,6 @@ class PasienLamaController extends Controller
     function daftar(Request $request)
     {
         try {
-            // return $request;
             $validator = Validator::make($request->all(), [
                 'poli_id' => 'required|string|max:36',
                 'user_id' => 'required|string|max:36',
@@ -119,9 +117,9 @@ class PasienLamaController extends Controller
                 $antrian = NomorAntrian::first();
                 $antrian->nomor = $request->post('nomor_antrian');
                 $antrian->save();
-                return redirect()->route('dashboard')->with('success', 'Berhasil');
+                return redirect()->route('dashboard')->with('success', 'Berhasil Daftar');
             }else{
-                return redirect()->back()->with('error', 'Gagal');
+                return redirect()->back()->with('error', 'Gagal Daftar');
             }
         } catch (\Exception $th) {
             $error['message'] = $th->getMessage();

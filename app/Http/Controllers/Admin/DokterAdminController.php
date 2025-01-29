@@ -25,7 +25,6 @@ class DokterAdminController extends Controller
             $query->where('name', 'like', '%' . $searchQuery . '%');
         })
         ->paginate(10);
-        // return $dokters;
         return Inertia::render('Admin/Dokter', [
             'dokters' => $dokters,
             'polis' => $polis,
@@ -49,12 +48,12 @@ class DokterAdminController extends Controller
     {
         try {
             $validator = Validator::make($request->all(), [
-                'poli_id' => 'required|string|max:36',
+                'poli_id' => 'required|string|max:36|exists:App\Models\Poli,id|unique:App\Models\Dokter,poli_id',
                 'user_id' => 'required|string|max:36',
             ]);
 
             if ($validator->fails()) {
-                return redirect()->back()->with('error', $validator->errors());
+                return redirect()->back()->with('error', $validator->errors()->first());
             }
 
             $dokter = Dokter::updateOrCreate([
@@ -117,7 +116,6 @@ class DokterAdminController extends Controller
             ], [
                 'name' => $request->post('name'),
             ]);
-            return $request;
             if ($poli) {
                 return redirect()->back()->with('success', 'Poli berhasil ditambahkan ke poli');
             } else {

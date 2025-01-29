@@ -6,15 +6,12 @@ import { ref } from 'vue';
 import Pagination from '@/Components/Partials/Pagination.vue';
 import { watch } from 'vue';
 import { reactive } from 'vue';
+import { toast } from 'vue3-toastify'
 
 const props = defineProps({
     janjiTemu: {
         type: Object,
         require: true,
-    },
-    filters: {
-        type: Object,
-        require: false,
     },
     polis: {
         type: Object,
@@ -24,19 +21,23 @@ const props = defineProps({
         type: Object,
         require: false,
     },
+    flash: {
+        type: Object,
+        require: false
+    },
 });
 
 let search = ref();
 
 watch(search, (value) => {
-  router.get(
-    "/admin/janji-temu",
-    { search: value },
-    {
-      preserveState: true,
-      replace: true,
-    }
-  );
+    router.get(
+        "/admin/janji-temu",
+        { search: value },
+        {
+            preserveState: true,
+            replace: true,
+        }
+    );
 });
 
 const form = useForm({
@@ -73,16 +74,26 @@ function closeModal(id: String) {
 function submit() {
     form.post('/admin/janji-temu', {
         preserveScroll: true,
-        onSuccess: () => closeModal(),
-        onError: () => alert('Error'),
+        onSuccess: () => {
+            closeModal(),
+                showToast(props.flash.success)
+        },
+        onError: () => {
+            showToastError(props.error.message)
+        },
     })
 }
 
 function submitTambah() {
     form.post('/admin/daftar', {
         preserveScroll: true,
-        onSuccess: () => closeModal(),
-        onError: () => alert('Error'),
+        onSuccess: () => {
+            closeModal(),
+                showToast(props.flash.success)
+        },
+        onError: () => {
+            showToastError(props.error.message)
+        },
     })
 }
 const formDetail = useForm({
@@ -112,7 +123,7 @@ function hanldeDelete(id: String, name: String) {
         if (konfirm) {
             router.delete(`/admin/janji-temu/${id}`)
         }
-    } catch (error)  {
+    } catch (error) {
         console.log(error)
     }
 }
@@ -122,129 +133,200 @@ function showModalTambah() {
 }
 
 const today = reactive(new Date().toISOString().split('T')[0],)
+
+const showToast = (message = 'Berhasil') => {
+    toast.success(message, {
+        position: 'top-right',
+    })
+}
+
+const showToastError = (message = 'Gagal') => {
+    toast.error(message, {
+        position: 'top-right',
+    })
+}
+
 </script>
 
 <template>
+
     <Head title="List Daftar" />
     <div>
         <AuthenticatedLayoutAdmin>
 
-                <div class="max-w-full">
-                    <div
-                        class="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800"
-                    >
-                        <div class="text-gray-900 dark:text-gray-100">
-                            <NavbarAdmin title="List Daftar">
-                                <div class="flex justify-between mb-2">
-                                   <div @click="showModalTambah" class="border border-black dark:border-white flex items-center">
-                                    <svg class="w-8 h-8 cursor-pointer" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M4 12H20M12 4V20" stroke="#70be3c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
-                                   </div>
-                                   <div>
-                                        <input v-model="search" type="text" placeholder="Search" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" />
-                                   </div>
+            <div class="max-w-full">
+                <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
+                    <div class="text-gray-900 dark:text-gray-100">
+                        <NavbarAdmin title="List Daftar">
+                            <div class="flex justify-between mb-2">
+                                <div @click="showModalTambah"
+                                    class="border border-black dark:border-white flex items-center">
+                                    <svg class="w-8 h-8 cursor-pointer" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
+                                        </g>
+                                        <g id="SVGRepo_iconCarrier">
+                                            <path d="M4 12H20M12 4V20" stroke="#70be3c" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round"></path>
+                                        </g>
+                                    </svg>
                                 </div>
-                                <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-                                    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                                            <tr>
-                                                <th scope="col" class="px-6 py-3">
-                                                    No
-                                                </th>
-                                                <th scope="col" class="px-6 py-3">
-                                                    Nomor RM
-                                                </th>
-                                                <th scope="col" class="px-6 py-3">
-                                                    Pasien
-                                                </th>
-                                                <th scope="col" class="px-6 py-3">
-                                                    Dokter
-                                                </th>
-                                                <th scope="col" class="px-6 py-3">
-                                                    Poli
-                                                </th>
-                                                <th scope="col" class="px-6 py-3">
-                                                    Tanggal Kunjungan
-                                                </th>
-                                                <th scope="col" class="px-6 py-3">
-                                                    Status Pasien
-                                                </th>
-                                                <th scope="col" class="px-6 py-3">
-                                                    Status Penanganan
-                                                </th>
-                                                <th scope="col" class="px-6 py-3">
-                                                    Nomor Antrian
-                                                </th>
-                                                <th scope="col" class="px-6 py-3">
-                                                    Action
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="item, index in props.janjiTemu.data" :key="index" class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200">
-                                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                    {{ index + props.janjiTemu.from }}
-                                                </th>
-                                                <td class="px-6 py-4">
-                                                    {{ item.user?.rekam_medis?.nomor_rekam_medis }}
-                                                </td>
-                                                <td class="px-6 py-4">
-                                                    {{ item.user.name }}
-                                                </td>
-                                                <td class="px-6 py-4">
-                                                    {{ item.dokter?.name }}
-                                                </td>
-                                                <td class="px-6 py-4">
-                                                    {{ item.poli?.name }}
-                                                </td>
-                                                <td class="px-6 py-4">
-                                                    {{ item.tanggal_kunjungan }}
-                                                </td>
-                                                <td class="px-6 py-4">
-                                                    {{ item.status_pasien }}
-                                                </td>
-                                                <td class="px-6 py-4">
-                                                    {{ item.status_penanganan }}
-                                                </td>
-                                                <td class="px-6 py-4">
-                                                    {{ item.nomor_antrian }}
-                                                </td>
-                                                <td class="px-6 py-4">
-                                                    <div class="flex gap-2">
-                                                        <svg @click="showModal(item.id)" class="w-8 h-8 cursor-pointer" fill="#4b98d2" height="200px" width="200px" version="1.2" baseProfile="tiny" id="earth" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="-63 65 128 128" xml:space="preserve" stroke="#4b98d2"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M46.8,154L18,160.6c-0.2,1.4-0.8,2.9-1.7,4.1c-1.7,2.6-4.3,4.5-7.3,5.3c-3,0.7-6.2,0.2-8.8-1.6l-24.8-15.8 c-1.2-0.7-1.4-2.1-0.7-3.2s2.1-1.4,3.1-0.7l24.9,15.8c3.3,2,7.6,1.1,9.7-2.1s1.1-7.6-2.1-9.7l-31-19.6c-5.1-3.2-11-5.7-16.6-2.9 L-63,144.8v29.4l18.4-13.7c2.9-0.7,6.1-0.1,8.8,1.6l21.6,13.6c5.3,3.3,11.8,4.1,17.4,2.6L50,167.6c3.7-0.8,6.2-4.5,5.3-8.5 C54.3,155.5,50.6,153.2,46.8,154z M26.4,81.3C8.2,81.3-6.5,96-6.5,114.2c0,18.2,14.7,32.9,32.9,32.9c18.2,0,32.9-14.7,32.9-32.9 C59.3,96,44.5,81.3,26.4,81.3z M45.1,102l-22.6,31.2L8,117.5c-1.6-1.8-1.5-4.5,0.2-6.2c1.8-1.6,4.5-1.5,6.2,0.2l7.3,7.9L38,96.9 c1.4-1.9,4.1-2.4,6.1-1C46,97.3,46.5,100.1,45.1,102z"></path> </g></svg>
-
-                                                        <svg @click="showDetail(item)" class="w-8 h-8 cursor-pointer" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#27bfdd"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M15.0007 12C15.0007 13.6569 13.6576 15 12.0007 15C10.3439 15 9.00073 13.6569 9.00073 12C9.00073 10.3431 10.3439 9 12.0007 9C13.6576 9 15.0007 10.3431 15.0007 12Z" stroke="#18d8b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M12.0012 5C7.52354 5 3.73326 7.94288 2.45898 12C3.73324 16.0571 7.52354 19 12.0012 19C16.4788 19 20.2691 16.0571 21.5434 12C20.2691 7.94291 16.4788 5 12.0012 5Z" stroke="#18d8b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
-
-                                                        <svg @click="hanldeDelete(item.id, item.user.name)" class="w-8 h-8 cursor-pointer" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M10 12L14 16M14 12L10 16M4 6H20M16 6L15.7294 5.18807C15.4671 4.40125 15.3359 4.00784 15.0927 3.71698C14.8779 3.46013 14.6021 3.26132 14.2905 3.13878C13.9376 3 13.523 3 12.6936 3H11.3064C10.477 3 10.0624 3 9.70951 3.13878C9.39792 3.26132 9.12208 3.46013 8.90729 3.71698C8.66405 4.00784 8.53292 4.40125 8.27064 5.18807L8 6M18 6V16.2C18 17.8802 18 18.7202 17.673 19.362C17.3854 19.9265 16.9265 20.3854 16.362 20.673C15.7202 21 14.8802 21 13.2 21H10.8C9.11984 21 8.27976 21 7.63803 20.673C7.07354 20.3854 6.6146 19.9265 6.32698 19.362C6 18.7202 6 17.8802 6 16.2V6" stroke="#eb2424" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
-                                                    </div>
-
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-
-                                    <Pagination
-                                        class="py-3 flex justify-center container mx-auto"
-                                        :links="props.janjiTemu.links"
-                                    />
+                                <div>
+                                    <input v-model="search" type="text" placeholder="Search"
+                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" />
                                 </div>
-                            </NavbarAdmin>
-                        </div>
+                            </div>
+                            <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+                                <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                                    <thead
+                                        class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                        <tr>
+                                            <th scope="col" class="px-6 py-3">
+                                                No
+                                            </th>
+                                            <th scope="col" class="px-6 py-3">
+                                                Nomor RM
+                                            </th>
+                                            <th scope="col" class="px-6 py-3">
+                                                Pasien
+                                            </th>
+                                            <th scope="col" class="px-6 py-3">
+                                                Dokter
+                                            </th>
+                                            <th scope="col" class="px-6 py-3">
+                                                Poli
+                                            </th>
+                                            <th scope="col" class="px-6 py-3">
+                                                Tanggal Kunjungan
+                                            </th>
+                                            <th scope="col" class="px-6 py-3">
+                                                Status Pasien
+                                            </th>
+                                            <th scope="col" class="px-6 py-3">
+                                                Status Penanganan
+                                            </th>
+                                            <th scope="col" class="px-6 py-3">
+                                                Nomor Antrian
+                                            </th>
+                                            <th scope="col" class="px-6 py-3">
+                                                Action
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="item, index in props.janjiTemu.data" :key="index"
+                                            class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200">
+                                            <th scope="row"
+                                                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                {{ index + props.janjiTemu.from }}
+                                            </th>
+                                            <td class="px-6 py-4">
+                                                {{ item.user?.rekam_medis?.nomor_rekam_medis }}
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                {{ item.user.name }}
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                {{ item.dokter?.name }}
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                {{ item.poli?.name }}
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                {{ item.tanggal_kunjungan }}
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                {{ item.status_pasien }}
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                {{ item.status_penanganan }}
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                {{ item.nomor_antrian }}
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                <div class="flex gap-2">
+                                                    <svg @click="showModal(item.id)" class="w-8 h-8 cursor-pointer"
+                                                        fill="#4b98d2" height="200px" width="200px" version="1.2"
+                                                        baseProfile="tiny" id="earth" xmlns="http://www.w3.org/2000/svg"
+                                                        xmlns:xlink="http://www.w3.org/1999/xlink"
+                                                        viewBox="-63 65 128 128" xml:space="preserve" stroke="#4b98d2">
+                                                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round"
+                                                            stroke-linejoin="round"></g>
+                                                        <g id="SVGRepo_iconCarrier">
+                                                            <path
+                                                                d="M46.8,154L18,160.6c-0.2,1.4-0.8,2.9-1.7,4.1c-1.7,2.6-4.3,4.5-7.3,5.3c-3,0.7-6.2,0.2-8.8-1.6l-24.8-15.8 c-1.2-0.7-1.4-2.1-0.7-3.2s2.1-1.4,3.1-0.7l24.9,15.8c3.3,2,7.6,1.1,9.7-2.1s1.1-7.6-2.1-9.7l-31-19.6c-5.1-3.2-11-5.7-16.6-2.9 L-63,144.8v29.4l18.4-13.7c2.9-0.7,6.1-0.1,8.8,1.6l21.6,13.6c5.3,3.3,11.8,4.1,17.4,2.6L50,167.6c3.7-0.8,6.2-4.5,5.3-8.5 C54.3,155.5,50.6,153.2,46.8,154z M26.4,81.3C8.2,81.3-6.5,96-6.5,114.2c0,18.2,14.7,32.9,32.9,32.9c18.2,0,32.9-14.7,32.9-32.9 C59.3,96,44.5,81.3,26.4,81.3z M45.1,102l-22.6,31.2L8,117.5c-1.6-1.8-1.5-4.5,0.2-6.2c1.8-1.6,4.5-1.5,6.2,0.2l7.3,7.9L38,96.9 c1.4-1.9,4.1-2.4,6.1-1C46,97.3,46.5,100.1,45.1,102z">
+                                                            </path>
+                                                        </g>
+                                                    </svg>
+
+                                                    <svg @click="showDetail(item)" class="w-8 h-8 cursor-pointer"
+                                                        viewBox="0 0 24 24" fill="none"
+                                                        xmlns="http://www.w3.org/2000/svg" stroke="#27bfdd">
+                                                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round"
+                                                            stroke-linejoin="round"></g>
+                                                        <g id="SVGRepo_iconCarrier">
+                                                            <path
+                                                                d="M15.0007 12C15.0007 13.6569 13.6576 15 12.0007 15C10.3439 15 9.00073 13.6569 9.00073 12C9.00073 10.3431 10.3439 9 12.0007 9C13.6576 9 15.0007 10.3431 15.0007 12Z"
+                                                                stroke="#18d8b8" stroke-width="2" stroke-linecap="round"
+                                                                stroke-linejoin="round"></path>
+                                                            <path
+                                                                d="M12.0012 5C7.52354 5 3.73326 7.94288 2.45898 12C3.73324 16.0571 7.52354 19 12.0012 19C16.4788 19 20.2691 16.0571 21.5434 12C20.2691 7.94291 16.4788 5 12.0012 5Z"
+                                                                stroke="#18d8b8" stroke-width="2" stroke-linecap="round"
+                                                                stroke-linejoin="round"></path>
+                                                        </g>
+                                                    </svg>
+
+                                                    <svg @click="hanldeDelete(item.id, item.user.name)"
+                                                        class="w-8 h-8 cursor-pointer" viewBox="0 0 24 24" fill="none"
+                                                        xmlns="http://www.w3.org/2000/svg">
+                                                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round"
+                                                            stroke-linejoin="round"></g>
+                                                        <g id="SVGRepo_iconCarrier">
+                                                            <path
+                                                                d="M10 12L14 16M14 12L10 16M4 6H20M16 6L15.7294 5.18807C15.4671 4.40125 15.3359 4.00784 15.0927 3.71698C14.8779 3.46013 14.6021 3.26132 14.2905 3.13878C13.9376 3 13.523 3 12.6936 3H11.3064C10.477 3 10.0624 3 9.70951 3.13878C9.39792 3.26132 9.12208 3.46013 8.90729 3.71698C8.66405 4.00784 8.53292 4.40125 8.27064 5.18807L8 6M18 6V16.2C18 17.8802 18 18.7202 17.673 19.362C17.3854 19.9265 16.9265 20.3854 16.362 20.673C15.7202 21 14.8802 21 13.2 21H10.8C9.11984 21 8.27976 21 7.63803 20.673C7.07354 20.3854 6.6146 19.9265 6.32698 19.362C6 18.7202 6 17.8802 6 16.2V6"
+                                                                stroke="#eb2424" stroke-width="2" stroke-linecap="round"
+                                                                stroke-linejoin="round"></path>
+                                                        </g>
+                                                    </svg>
+                                                </div>
+
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <Pagination class="py-3 flex justify-center container mx-auto"
+                                    :links="props.janjiTemu.links" />
+                            </div>
+                        </NavbarAdmin>
                     </div>
                 </div>
+            </div>
 
             <!-- Main modal -->
-            <div id="default-modal" tabindex="-1" aria-hidden="true" :class="modal ? 'flex' : 'hidden'" class="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+            <div id="default-modal" tabindex="-1" aria-hidden="true" :class="modal ? 'flex' : 'hidden'"
+                class="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
                 <div class="relative p-4 w-full max-w-2xl max-h-full">
                     <!-- Modal content -->
                     <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
                         <!-- Modal header -->
-                        <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
+                        <div
+                            class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
                             <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
                                 Status Penanganan
                             </h3>
-                            <button @click="closeModal" type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="default-modal">
-                                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                            <button @click="closeModal" type="button"
+                                class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                                data-modal-hide="default-modal">
+                                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                    viewBox="0 0 14 14">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
                                 </svg>
                                 <span class="sr-only">Close modal</span>
                             </button>
@@ -252,17 +334,22 @@ const today = reactive(new Date().toISOString().split('T')[0],)
                         <!-- Modal body -->
                         <div class="p-4 md:p-5 space-y-4">
                             <div class="flex">
-                                <select v-model="form.status" id="status" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                <option :selected="form.status == null" value="">Pilih Status</option>
-                                <option value="menunggu">Menunggu</option>
-                                <option value="diperiksa">Diperiksa</option>
+                                <select v-model="form.status" id="status"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                    <option :selected="form.status == null" value="">Pilih Status</option>
+                                    <option value="menunggu">Menunggu</option>
+                                    <option value="diperiksa">Diperiksa</option>
                                 </select>
-                                <button @click="submit" v-show="form.status" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md" type="button">Submit</button>
+                                <button @click="submit" v-show="form.status"
+                                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md"
+                                    type="button">Submit</button>
                             </div>
                         </div>
                         <!-- Modal footer -->
-                        <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
-                            <button @click="closeModal" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Close</button>
+                        <div
+                            class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
+                            <button @click="closeModal" type="button"
+                                class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Close</button>
                         </div>
                     </div>
                 </div>
@@ -270,18 +357,24 @@ const today = reactive(new Date().toISOString().split('T')[0],)
 
 
             <!-- Main detail -->
-            <div tabindex="-1" aria-hidden="true" :class="modalDetail ? 'flex' : 'hidden'" class="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+            <div tabindex="-1" aria-hidden="true" :class="modalDetail ? 'flex' : 'hidden'"
+                class="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
                 <div class="relative p-4 w-full max-w-2xl max-h-full">
                     <!-- Modal content -->
                     <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
                         <!-- Modal header -->
-                        <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
+                        <div
+                            class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
                             <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
                                 Detail
                             </h3>
-                            <button @click="closeModal" type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="default-modal">
-                                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                            <button @click="closeModal" type="button"
+                                class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                                data-modal-hide="default-modal">
+                                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                    viewBox="0 0 14 14">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
                                 </svg>
                                 <span class="sr-only">Close modal</span>
                             </button>
@@ -289,7 +382,7 @@ const today = reactive(new Date().toISOString().split('T')[0],)
                         <!-- Modal body -->
                         <div class="p-4 md:p-5 space-y-4">
                             <table border="2" class="dark:text-white text-black">
-                                <tr >
+                                <tr>
                                     <td class="font-bold">Nama</td>
                                     <td class="font-bold">:</td>
                                     <td>{{ formDetail.nama_pasien }}</td>
@@ -322,95 +415,133 @@ const today = reactive(new Date().toISOString().split('T')[0],)
                             </table>
                         </div>
                         <!-- Modal footer -->
-                        <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
-                            <button @click="closeModal" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Close</button>
+                        <div
+                            class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
+                            <button @click="closeModal" type="button"
+                                class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Close</button>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Main modal form -->
-            <div tabindex="-1" aria-hidden="true" :class="modalTambah ? 'flex' : 'hidden'" class="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+            <div tabindex="-1" aria-hidden="true" :class="modalTambah ? 'flex' : 'hidden'"
+                class="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
                 <div class="relative p-4 w-full max-w-2xl max-h-full">
                     <!-- Modal content -->
                     <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
-                        <!-- Modal header -->
-                        <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
-                            <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-                                Pendaftaran
-                            </h3>
-                            <button @click="closeModal" type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="default-modal">
-                                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                                </svg>
-                                <span class="sr-only">Close modal</span>
-                            </button>
-                        </div>
-                        <!-- Modal body -->
-                        <div class="p-4 md:p-5 space-y-4">
-                            <section class="bg-white dark:bg-gray-900">
-                                <div class="py-8 px-4 mx-auto max-w-2xl">
+                        <form @submit.prevent="submitTambah">
+                            <!-- Modal header -->
+                            <div
+                                class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
+                                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                                    Pendaftaran
+                                </h3>
+                                <button @click="closeModal" type="button"
+                                    class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                                    data-modal-hide="default-modal">
+                                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                        fill="none" viewBox="0 0 14 14">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                            stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                                    </svg>
+                                    <span class="sr-only">Close modal</span>
+                                </button>
+                            </div>
+                            <!-- Modal body -->
+                            <div class="p-4 md:p-5 space-y-4">
+                                <section class="bg-white dark:bg-gray-900">
+                                    <div class="py-8 px-4 mx-auto max-w-2xl">
                                         <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
                                             <div class="w-full">
-                                                <label for="status_pasien" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Status Pasien</label>
-                                                <select required v-model="form.status_pasien" id="status_pasien" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                                                    <option :selected="form.status_pasien == null" value="">Status Pasien</option>
+                                                <label for="status_pasien"
+                                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Status
+                                                    Pasien</label>
+                                                <select required v-model="form.status_pasien" id="status_pasien"
+                                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                                                    <option :selected="form.status_pasien == null" value="">Status
+                                                        Pasien</option>
                                                     <option value="baru">Baru</option>
                                                     <option value="lama">Lama</option>
                                                 </select>
                                             </div>
                                             <div class="w-full">
-                                                <label for="status_penanganan" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Status Penanganan</label>
-                                                <select required v-model="form.status_penanganan" id="status_penanganan" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                                                    <option :selected="form.status_penanganan == null" value="">Status Penanganan</option>
+                                                <label for="status_penanganan"
+                                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Status
+                                                    Penanganan</label>
+                                                <select required v-model="form.status_penanganan" id="status_penanganan"
+                                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                                                    <option :selected="form.status_penanganan == null" value="">Status
+                                                        Penanganan</option>
                                                     <option value="menunggu">Menunggu</option>
                                                     <option value="diperiksa">Diperiksa</option>
                                                     <option value="selesai">selesai</option>
                                                 </select>
                                             </div>
                                             <div class="w-full">
-                                                <label for="user_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Status Rawat</label>
-                                                <select required v-model="form.status_rawat" id="user_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                                                    <option :selected="form.status_rawat == null" value="">Status Rawat</option>
-                                                    <option value="menginap">Menginap</option>
+                                                <label for="user_id"
+                                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Status
+                                                    Rawat</label>
+                                                <select required v-model="form.status_rawat" id="user_id"
+                                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                                                    <option :selected="form.status_rawat == null" value="">Status Rawat
+                                                    </option>
+                                                    <!-- <option value="menginap">Menginap</option>
                                                     <option value="pulang">Pulang</option>
-                                                    <option value="boleh pulang">Boleh Pulang</option>
+                                                    <option value="boleh pulang">Boleh Pulang</option> -->
                                                     <option value="rawat jalan">Rawat Jalan</option>
                                                 </select>
                                             </div>
                                             <div class="w-full">
-                                                <label for="user_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Pasien</label>
-                                                <select required v-model="form.user_id" id="user_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                                                    <option :selected="form.user_id == null" value="">Pilih Pasien</option>
-                                                    <option v-for="item, index in props.users" :key="index" :value="item.id" :selected="form.user_id == item.id">
+                                                <label for="user_id"
+                                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Pasien</label>
+                                                <select required v-model="form.user_id" id="user_id"
+                                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                                                    <option :selected="form.user_id == null" value="">Pilih Pasien
+                                                    </option>
+                                                    <option v-for="item, index in props.users" :key="index"
+                                                        :value="item.id" :selected="form.user_id == item.id">
                                                         {{ item.name }}
                                                     </option>
                                                 </select>
                                             </div>
                                             <div class="w-full">
-                                                <label for="tanggal_kunjungan" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tanggal Kunjungan</label>
-                                                <input v-model="form.tanggal_kunjungan" type="date" name="tanggal_kunjungan" id="tanggal_kunjungan" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="" required="" :min="today">
+                                                <label for="tanggal_kunjungan"
+                                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tanggal
+                                                    Kunjungan</label>
+                                                <input v-model="form.tanggal_kunjungan" type="date"
+                                                    name="tanggal_kunjungan" id="tanggal_kunjungan"
+                                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                                    placeholder="" required="" :min="today">
                                             </div>
                                             <div class="w-full">
-                                                <label for="poli_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Poli</label>
-                                                <select required v-model="form.poli_id" id="poli_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                                                    <option :selected="form.poli_id == null" value="">Pilih Poli</option>
-                                                    <option v-for="item, index in props.polis" :key="index" :value="item.id" :selected="form.poli_id == item.id">
+                                                <label for="poli_id"
+                                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Poli</label>
+                                                <select required v-model="form.poli_id" id="poli_id"
+                                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                                                    <option :selected="form.poli_id == null" value="">Pilih Poli
+                                                    </option>
+                                                    <option v-for="item, index in props.polis" :key="index"
+                                                        :value="item.id" :selected="form.poli_id == item.id">
                                                         {{ item.name }}
                                                     </option>
                                                 </select>
                                             </div>
                                         </div>
-                                        <button @click="submitTambah" type="submit" class="bg-blue-600 inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
+                                        <button type="submit"
+                                            class="bg-blue-600 inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
                                             Daftar
                                         </button>
-                                </div>
-                            </section>
-                        </div>
-                        <!-- Modal footer -->
-                        <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
-                            <button @click="closeModal" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Close</button>
-                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                            <!-- Modal footer -->
+                            <div
+                                class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
+                                <button @click="closeModal" type="button"
+                                    class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Close</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>

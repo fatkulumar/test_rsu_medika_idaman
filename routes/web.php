@@ -19,6 +19,10 @@ Route::get('/pegawai/dashboard', App\Http\Controllers\Pegawai\DashboardPegawaiCo
 Route::get('/admin/dashboard', App\Http\Controllers\Admin\DashboardAdminController::class)->middleware(['auth', 'verified', 'role:admin'])->name('admin.dashboard');
 Route::get('/dokter/dashboard', App\Http\Controllers\Dokter\DashboardDokterController::class)->middleware(['auth', 'verified', 'role:dokter'])->name('dokter.dashboard');
 
+Route::fallback(function () {
+    return Inertia::render('Errors/404')->toResponse(request())->setStatusCode(404);
+});
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
